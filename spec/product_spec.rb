@@ -1,5 +1,4 @@
 require 'spec_helper'
-require_relative '../lib/product'
 
 RSpec.describe Product do
   describe '#valid?' do

@@ -1,6 +1,4 @@
 require 'spec_helper'
-require_relative '../lib/product'
-require_relative '../lib/products_repository'
 
 RSpec.describe ProductsRepository do
   let(:repository) { ProductsRepository.new }

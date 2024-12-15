@@ -1,6 +1,11 @@
 require 'rspec'
 require 'money'
 
+require 'active_support/all'
+require_relative '../lib/product'
+require_relative '../lib/products_repository'
+require_relative '../lib/checkout'
+
 Money.default_currency = 'GBP'
 
 RSpec.configure do |config|
