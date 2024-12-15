@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe Checkout do
-  let(:repository) { ProductsRepository.new }
-  let(:discounts) { DiscountsRepository.new }
+  let(:repository) { Repositories::Products.new }
+  let(:discounts) { Repositories::Discounts.new }
   let(:checkout) { Checkout.new(repository, discounts) }
 
   before do

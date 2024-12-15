@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe DiscountsRepository do
-  let(:discounts) { DiscountsRepository.new }
+RSpec.describe Repositories::Discounts  do
+  let(:discounts) { Repositories::Discounts.new }
 
   it 'returns an empty array if no discounts are applied' do
     expect(discounts.applicable_discounts('GR1')).to eq([])

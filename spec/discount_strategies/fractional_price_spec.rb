@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe DiscountStrategies::FractionalPrice do
-  let(:repository) { ProductsRepository.new }
+  let(:repository) { Repositories::Products.new }
 
   before do
     repository.add_product(Product.new(code: 'CF1', name: 'Coffee', price: 11.23))

@@ -1,8 +1,7 @@
-# spec/line_item_spec.rb
 require 'spec_helper'
 
 RSpec.describe LineItem do
-  let(:repository) { ProductsRepository.new }
+  let(:repository) { Repositories::Products.new }
 
   before do
     repository.add_product(Product.new(code: 'GR1', name: 'Green Tea', price: 3.11))
