@@ -14,7 +14,6 @@ RSpec.describe Checkout do
   describe '#scan' do
     it 'adds a product to the basket by scanning its code' do
       checkout.scan('GR1')
-      product = repository.find_product_by_code('GR1')
 
       expect(checkout.basket).to include('GR1')
     end
@@ -39,7 +38,7 @@ RSpec.describe Checkout do
       end
     end
 
-    context 'with discounts applied to a product' do
+    context 'with buy one get one free discount applied to GR1' do
       before do
         discounts.apply('GR1', BuyOneGetOneFreeDiscount, required_quantity: 1, free_quantity: 1)
       end
@@ -59,14 +58,53 @@ RSpec.describe Checkout do
 
         expect(checkout.total).to eq(Money.from_amount(6.22))
       end
+    end
 
-      it 'applies discounts only to eligible products' do
+    context 'with bulk price discount applied to SR1' do
+      before do
+        discounts.apply('SR1', BulkPriceDiscount, required_quantity: 3, new_price: 4.50)
+      end
+
+      it 'returns normal price if less than required quantity' do
+        checkout.scan('SR1')
+        checkout.scan('SR1')
+
+        expect(checkout.total).to eq(Money.from_amount(10.00))
+      end
+
+      it 'applies discounted price when hitting required quantity' do
+        checkout.scan('SR1')
+        checkout.scan('SR1')
+        checkout.scan('SR1')
+
+        expect(checkout.total).to eq(Money.from_amount(13.50))
+      end
+
+      it 'applies larger discount for more items' do
+        checkout.scan('SR1')
+        checkout.scan('SR1')
+        checkout.scan('SR1')
+        checkout.scan('SR1')
+
+        expect(checkout.total).to eq(Money.from_amount(18.00))
+      end
+    end
+
+    context 'with both BOGO and bulk price discounts applied' do
+      before do
+        discounts.apply('GR1', BuyOneGetOneFreeDiscount, required_quantity: 1, free_quantity: 1)
+        discounts.apply('SR1', BulkPriceDiscount, required_quantity: 3, new_price: 4.50)
+      end
+
+      it 'applies both discounts to their respective products' do
+        checkout.scan('GR1')
         checkout.scan('GR1')
         checkout.scan('SR1')
-        checkout.scan('GR1')
+        checkout.scan('SR1')
+        checkout.scan('SR1')
         checkout.scan('CF1')
 
-        expect(checkout.total).to eq(Money.from_amount(19.34))
+        expect(checkout.total).to eq(Money.from_amount(27.84))
       end
     end
   end
