@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe BulkPriceDiscount do
+RSpec.describe DiscountStrategies::BulkPrice do
   let(:repository) { ProductsRepository.new }
 
   before do
@@ -10,13 +10,13 @@ RSpec.describe BulkPriceDiscount do
   let(:product) { repository.find_product_by_code('SR1') }
 
   it 'returns 0.00 when quantity is less than required' do
-    discount = BulkPriceDiscount.new(required_quantity: 3, new_price: 4.50)
+    discount = DiscountStrategies::BulkPrice.new(required_quantity: 3, new_price: 4.50)
     line_item = LineItem.new(product, 2)
     expect(discount.apply(line_item)).to eq(Money.from_amount(0.00))
   end
 
   it 'applies discount when quantity meets or exceeds required quantity' do
-    discount = BulkPriceDiscount.new(required_quantity: 3, new_price: 4.50)
+    discount = DiscountStrategies::BulkPrice.new(required_quantity: 3, new_price: 4.50)
     line_item = LineItem.new(product, 3)
     # Original: 3 * 5.00 = 15.00
     # Discounted: 3 * 4.50 = 13.50
@@ -25,7 +25,7 @@ RSpec.describe BulkPriceDiscount do
   end
 
   it 'applies larger discount for more items' do
-    discount = BulkPriceDiscount.new(required_quantity: 3, new_price: 4.50)
+    discount = DiscountStrategies::BulkPrice.new(required_quantity: 3, new_price: 4.50)
     line_item = LineItem.new(product, 5)
     # Original: 5 * 5.00 = 25.00
     # Discounted: 5 * 4.50 = 22.50

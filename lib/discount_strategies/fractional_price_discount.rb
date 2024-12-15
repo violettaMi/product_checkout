@@ -1,6 +1,6 @@
 require_relative 'discount_strategy'
 
-class FractionalPriceDiscount < DiscountStrategy
+class DiscountStrategies::FractionalPrice < DiscountStrategy
   def initialize(required_quantity:, fraction:)
     @required_quantity = required_quantity
     @fraction = fraction

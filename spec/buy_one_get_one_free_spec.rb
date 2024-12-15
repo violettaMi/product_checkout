@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe BuyOneGetOneFreeDiscount do
+RSpec.describe DiscountStrategies::BuyOneGetOneFree do
   let(:repository) { ProductsRepository.new }
 
   before do
@@ -12,7 +12,7 @@ RSpec.describe BuyOneGetOneFreeDiscount do
 
     context 'with no discount scenario' do
       it 'returns 0.00 when only one product is present' do
-        discount = BuyOneGetOneFreeDiscount.new(required_quantity: 1, free_quantity: 1)
+        discount = DiscountStrategies::BuyOneGetOneFree.new(required_quantity: 1, free_quantity: 1)
         line_item = LineItem.new(product, 1)
         expect(discount.apply(line_item)).to eq(Money.from_amount(0.00))
       end
@@ -20,13 +20,13 @@ RSpec.describe BuyOneGetOneFreeDiscount do
 
     context 'with eligible scenario' do
       it 'applies discount for two products' do
-        discount = BuyOneGetOneFreeDiscount.new(required_quantity: 1, free_quantity: 1)
+        discount = DiscountStrategies::BuyOneGetOneFree.new(required_quantity: 1, free_quantity: 1)
         line_item = LineItem.new(product, 2)
         expect(discount.apply(line_item)).to eq(Money.from_amount(3.11))
       end
 
       it 'applies discount for multiple products' do
-        discount = BuyOneGetOneFreeDiscount.new(required_quantity: 1, free_quantity: 1)
+        discount = DiscountStrategies::BuyOneGetOneFree.new(required_quantity: 1, free_quantity: 1)
         line_item = LineItem.new(product, 4)
         expect(discount.apply(line_item)).to eq(Money.from_amount(6.22))
       end

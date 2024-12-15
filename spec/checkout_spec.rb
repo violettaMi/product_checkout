@@ -40,7 +40,7 @@ RSpec.describe Checkout do
 
     context 'with buy one get one free discount applied to GR1' do
       before do
-        discounts.apply('GR1', BuyOneGetOneFreeDiscount, required_quantity: 1, free_quantity: 1)
+        discounts.apply('GR1', DiscountStrategies::BuyOneGetOneFree, required_quantity: 1, free_quantity: 1)
       end
 
       it 'applies the Buy One Get One Free discount for two GR1' do
@@ -62,7 +62,7 @@ RSpec.describe Checkout do
 
     context 'with bulk price discount applied to SR1' do
       before do
-        discounts.apply('SR1', BulkPriceDiscount, required_quantity: 3, new_price: 4.50)
+        discounts.apply('SR1', DiscountStrategies::BulkPrice, required_quantity: 3, new_price: 4.50)
       end
 
       it 'returns normal price if less than required quantity' do
@@ -92,7 +92,7 @@ RSpec.describe Checkout do
 
     context 'with fractional price discount on CF1' do
       before do
-        discounts.apply('CF1', FractionalPriceDiscount, required_quantity: 3, fraction: 2.0/3.0)
+        discounts.apply('CF1', DiscountStrategies::FractionalPrice, required_quantity: 3, fraction: 2.0/3.0)
       end
 
       it 'returns normal price if less than required quantity' do
@@ -106,7 +106,7 @@ RSpec.describe Checkout do
         checkout.scan('CF1')
         checkout.scan('CF1')
         checkout.scan('CF1')
-        
+
         original = Money.from_amount(33.69)
         discounted = original * (2.0/3.0)
 
@@ -128,9 +128,9 @@ RSpec.describe Checkout do
 
     context 'with multiple discounts applied to different products' do
       before do
-        discounts.apply('GR1', BuyOneGetOneFreeDiscount, required_quantity: 1, free_quantity: 1)
-        discounts.apply('SR1', BulkPriceDiscount, required_quantity: 3, new_price: 4.50)
-        discounts.apply('CF1', FractionalPriceDiscount, required_quantity: 3, fraction: 2.0/3.0)
+        discounts.apply('GR1', DiscountStrategies::BuyOneGetOneFree, required_quantity: 1, free_quantity: 1)
+        discounts.apply('SR1', DiscountStrategies::BulkPrice, required_quantity: 3, new_price: 4.50)
+        discounts.apply('CF1', DiscountStrategies::FractionalPrice, required_quantity: 3, fraction: 2.0/3.0)
       end
 
       it 'applies one free discount to GR1' do
