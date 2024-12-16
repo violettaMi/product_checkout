@@ -1,57 +1,88 @@
-# Product Checkout System
+# Product Checkout
 
-This system is designed to scan products, calculate totals, and apply various discount strategies to specific products.
-It is structured to be maintainable, extensible, and follows SOLID principles, allowing users to easily introduce new products, discounts, and pricing rules.
+This app scans products, calculates totals, and applies various discount strategies for specific products. It's designed to be maintainable, extensible, and follows SOLID principles, allowing users to introduce new products, discounts, and pricing rules.
 
-## Key Components
+## Architecture
 
-**Product**: Represents an individual item with a code, name, and price.
-**LineItem**: Groups identical products with a quantity, simplifying discount calculations.
-**Repositories** (under `Repository` namespace):
-  - **Products**: Manages product storage and retrieval.
-  - **Discounts**: Associates products with their discount strategies.
- **Checkout**: Scans product codes, builds line items, and calculates the total price by applying discounts.
-**Discount Strategies** (under `DiscountStrategy` namespace):
-  - **BuyOneGetOneFree**: Buy X items, get Y items free (e.g., buy one get two).
-  - **BulkPrice**: If you buy a required quantity, the price of each item changes to a specified bulk price.
-  - **FractionalPrice**: If you meet a required quantity, all item prices are reduced by a certain fraction.
+- **Products and Pricing**: Each `Product` has a code, name, and price.
+- **Line Items**: The `Checkout` groups scanned products into `LineItem`s, making it easier to apply discounts based on quantity.
+- **Repositories**:
+  - `Repository::Products` stores and validates products.
+  - `Repository::Discounts` associates specific products with discount strategies.
+- **Discount Strategies**: Placed under `DiscountStrategy` namespace, each implements a common interface:
+  - **BuyOneGetOneFree**: Configurable by required and free quantities.
+  - **BulkPrice**: If you buy a certain quantity, the price for each item changes to a specified bulk price.
+  - **FractionalPrice**: If you buy a certain quantity, all items' prices for that product are multiplied by a fraction (e.g., 2/3).
 
-## Flow
+The `Checkout` class:
+- Scans product codes.
+- Converts scanned items into `LineItem`s.
+- Applies all applicable discount strategies for each product line.
+- Calculates the final total (subtotal minus all discounts).
 
-1. Add products to `Repository::Products`.
-2. Register discounts per product code in `Repository::Discounts`.
-3. `Checkout` scans product codes and converts them into `LineItem`s.
-4. `Checkout#total` calculates the subtotal of all line items, then applies each discount strategy relevant to each product code.
-5. The final total reflects all discounts applied.
+This modular design makes it simple to add new strategies without modifying existing code (O in SOLID).
 
-## Example
+## Installation
 
-```ruby
-products = Repository::Products.new
-discounts = Repository::Discounts.new
+1. **Ensure Ruby and Bundler are Installed**:
+   - Ruby version 3.0 or higher.
+   - Bundler gem.
 
-products.add_product(Product.new(code: 'GR1', name: 'Green Tea', price: 3.11))
-products.add_product(Product.new(code: 'SR1', name: 'Strawberries', price: 5.00))
-products.add_product(Product.new(code: 'CF1', name: 'Coffee', price: 11.23))
+2. **Clone the Repository**:
+   ```bash
+   git clone git@github.com:violettaMi/product_checkout.git
+   cd product_checkout
+   ```
 
-# Apply discounts to specific products
-discounts.apply('GR1', DiscountStrategy::BuyOneGetOneFree, required_quantity: 1, free_quantity: 1)
-discounts.apply('SR1', DiscountStrategy::BulkPrice, required_quantity: 3, new_price: 4.50)
-discounts.apply('CF1', DiscountStrategy::FractionalPrice, required_quantity: 3, fraction: 2.0/3.0)
+3. **Install Dependencies**:
+   ```bash
+   bundle install
+   ```
 
-checkout = Checkout.new(products, discounts)
+## Running Tests
 
-# Scan items
-checkout.scan('GR1')
-checkout.scan('GR1')
-checkout.scan('SR1')
-checkout.scan('SR1')
-checkout.scan('SR1')
-checkout.scan('CF1')
-checkout.scan('CF1')
-checkout.scan('CF1')
+Execute the test suite to verify the functionality of products, discounts, and checkout logic.
 
-# Calculate total
-checkout.total
+```bash
+bundle exec rspec
 ```
-This prints the total (​£39.07) with all applicable discounts.
+
+All tests should be green.
+
+## Running the Demo
+
+An example script `app.rb` is provided to demonstrate the system in action.
+
+```bash
+ruby app.rb
+```
+
+### Example Scenarios
+
+1. **Basket: GR1, GR1**
+   - **Discount Applied**: Buy One Get One Free on `GR1`.
+   - **Total**: £3.11
+
+2. **Basket: SR1, SR1, SR1**
+   - **Discount Applied**: Bulk Price Discount on `SR1` (3 or more for £4.50 each).
+   - **Total**: £13.50
+
+3. **Basket: GR1, SR1, GR1, GR1, CF1**
+   - **Discounts Applied**:
+     - Buy One Get One Free on `GR1`.
+     - Bulk Price Discount on `SR1`.
+   - **Total**: £27.84
+
+4. **Basket: CF1, CF1, CF1**
+   - **Discount Applied**: Fractional Price Discount on `CF1` (3 or more at two-thirds price).
+   - **Total**: £22.46
+
+### Customizing the Demo
+
+You can modify `app.rb` to test different baskets, add more products, or apply different discount strategies. This flexibility allows you to experiment with various scenarios and understand how discounts impact the total price.
+
+## Summary
+
+The Product Checkout System is a robust and flexible solution for managing product scanning and discount application. Its adherence to SOLID principles ensures that it remains maintainable and scalable, allowing for easy integration of new features and discount strategies in the future.
+
+Feel free to explore the codebase, run the demo, and extend the system to fit your specific needs!
