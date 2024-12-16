@@ -1,4 +1,4 @@
-module Repositories
+module Repository
   class Products
     def initialize
       @products = {}
@@ -7,15 +7,16 @@ module Repositories
     def add_product(product)
       validate_product!(product)
       ensure_unique!(product)
-      @products[product.code] = product
+
+      products[product.code] = product
     end
 
     def find_product_by_code(code)
-      @products.fetch(code) { raise_not_found_error(code) }
+      products.fetch(code) { raise_not_found_error(code) }
     end
 
     def all_products
-      @products.values
+      products.values
     end
 
     private

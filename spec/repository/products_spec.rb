@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe Repositories::Products do
-  let(:repository) { Repositories::Products.new }
+RSpec.describe Repository::Products do
+  let(:repository) { Repository::Products.new }
 
   describe '#add_product' do
     context 'when adding a new unique product' do

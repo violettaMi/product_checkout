@@ -24,6 +24,7 @@ class Product
 
   def convert_to_money(amount)
     raise "Price must be a numeric value" unless amount.is_a?(Numeric)
+    
     Money.from_amount(amount)
   end
 
