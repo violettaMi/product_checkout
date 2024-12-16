@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Repository::Products do
-  let(:repository) { Repository::Products.new }
+  let(:repository) { described_class.new }
 
   describe '#add_product' do
     context 'when adding a new unique product' do
@@ -29,7 +31,9 @@ RSpec.describe Repository::Products do
       it 'raises an error due to invalid product' do
         invalid_product = Product.new(code: '', name: 'Invalid Product', price: -5.00)
 
-        expect { repository.add_product(invalid_product) }.to raise_error("Invalid product: Product code can't be blank")
+        expect do
+          repository.add_product(invalid_product)
+        end.to raise_error("Invalid product: Product code can't be blank")
       end
     end
   end
@@ -47,7 +51,9 @@ RSpec.describe Repository::Products do
 
     context 'when the product does not exist in the repository' do
       it 'raises an error' do
-        expect { repository.find_product_by_code('NON_EXISTENT') }.to raise_error("Product with code 'NON_EXISTENT' not found.")
+        expect do
+          repository.find_product_by_code('NON_EXISTENT')
+        end.to raise_error("Product with code 'NON_EXISTENT' not found.")
       end
     end
   end

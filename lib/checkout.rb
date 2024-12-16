@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Checkout
   attr_reader :basket
 
@@ -30,6 +32,7 @@ class Checkout
 
     grouped.map do |code, codes|
       product = products_repository.find_product_by_code(code)
+
       LineItem.new(product, codes.size)
     end
   end

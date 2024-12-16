@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Repository
   class Products
     def initialize
@@ -25,14 +27,14 @@ module Repository
 
     def validate_product!(product)
       product.valid!
-    rescue => e
+    rescue StandardError => e
       raise "Invalid product: #{e.message}"
     end
 
     def ensure_unique!(product)
-      if products.key?(product.code)
-        raise "Product with code '#{product.code}' already exists."
-      end
+      return unless products.key?(product.code)
+
+      raise "Product with code '#{product.code}' already exists."
     end
 
     def raise_not_found_error(code)

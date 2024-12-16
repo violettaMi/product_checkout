@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'money'
 require 'active_support/all'
 
@@ -23,8 +25,8 @@ class Product
   private
 
   def convert_to_money(amount)
-    raise "Price must be a numeric value" unless amount.is_a?(Numeric)
-    
+    raise 'Price must be a numeric value' unless amount.is_a?(Numeric)
+
     Money.from_amount(amount)
   end
 
@@ -49,7 +51,7 @@ class Product
   end
 
   def validate_price!
-    raise "Product price must be a Money object" unless price.is_a?(Money)
-    raise "Product price must be greater than zero" unless price_valid?
+    raise 'Product price must be a Money object' unless price.is_a?(Money)
+    raise 'Product price must be greater than zero' unless price_valid?
   end
 end

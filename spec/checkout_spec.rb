@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Checkout do
   let(:repository) { Repository::Products.new }
   let(:discounts) { Repository::Discounts.new }
-  let(:checkout) { Checkout.new(repository, discounts) }
+  let(:checkout) { described_class.new(repository, discounts) }
 
   before do
     repository.add_product(Product.new(code: 'GR1', name: 'Green Tea', price: 3.11))
@@ -92,7 +94,7 @@ RSpec.describe Checkout do
 
     context 'with fractional price discount on CF1' do
       before do
-        discounts.apply('CF1', DiscountStrategy::FractionalPrice, required_quantity: 3, fraction: 2.0/3.0)
+        discounts.apply('CF1', DiscountStrategy::FractionalPrice, required_quantity: 3, fraction: 2.0 / 3.0)
       end
 
       it 'returns normal price if less than required quantity' do
@@ -108,7 +110,7 @@ RSpec.describe Checkout do
         checkout.scan('CF1')
 
         original = Money.from_amount(33.69)
-        discounted = original * (2.0/3.0)
+        discounted = original * (2.0 / 3.0)
 
         expect(checkout.total).to eq(discounted)
       end
@@ -120,7 +122,7 @@ RSpec.describe Checkout do
         checkout.scan('CF1')
 
         original = Money.from_amount(44.92)
-        discounted = original * (2.0/3.0)
+        discounted = original * (2.0 / 3.0)
 
         expect(checkout.total).to eq(discounted)
       end
@@ -130,7 +132,7 @@ RSpec.describe Checkout do
       before do
         discounts.apply('GR1', DiscountStrategy::BuyOneGetOneFree, required_quantity: 1, free_quantity: 1)
         discounts.apply('SR1', DiscountStrategy::BulkPrice, required_quantity: 3, new_price: 4.50)
-        discounts.apply('CF1', DiscountStrategy::FractionalPrice, required_quantity: 3, fraction: 2.0/3.0)
+        discounts.apply('CF1', DiscountStrategy::FractionalPrice, required_quantity: 3, fraction: 2.0 / 3.0)
       end
 
       it 'applies one free discount to GR1' do
@@ -154,9 +156,7 @@ RSpec.describe Checkout do
         checkout.scan('CF1')
 
         original_subtotal = Money.from_amount(33.69)
-        discounted_subtotal = original_subtotal * (2.0/3.0)
-        discount_amount = original_subtotal - discounted_subtotal
-        expected_total = original_subtotal - discount_amount
+        discounted_subtotal = original_subtotal * (2.0 / 3.0)
 
         expect(checkout.total).to eq(discounted_subtotal)
       end
@@ -172,7 +172,7 @@ RSpec.describe Checkout do
         checkout.scan('CF1')
 
         original_cf_subtotal = Money.from_amount(33.69)
-        cf_discounted_subtotal = original_cf_subtotal * (2.0/3.0)
+        cf_discounted_subtotal = original_cf_subtotal * (2.0 / 3.0)
         cf_total = cf_discounted_subtotal
         gr_total = Money.from_amount(3.11)
         sr_total = Money.from_amount(13.50)

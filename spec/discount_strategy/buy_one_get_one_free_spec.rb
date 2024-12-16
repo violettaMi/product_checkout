@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DiscountStrategy::BuyOneGetOneFree do
@@ -9,7 +11,7 @@ RSpec.describe DiscountStrategy::BuyOneGetOneFree do
 
   describe '#apply' do
     let(:product) { repository.find_product_by_code('GR1') }
-    let(:discount) { DiscountStrategy::BuyOneGetOneFree.new(required_quantity: 1, free_quantity: 1) }
+    let(:discount) { described_class.new(required_quantity: 1, free_quantity: 1) }
 
     context 'with no discount scenario' do
       it 'returns 0.00 when only one product is present' do

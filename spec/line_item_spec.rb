@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe LineItem do
@@ -10,7 +12,7 @@ RSpec.describe LineItem do
   describe '#subtotal' do
     it 'calculates the subtotal for a given quantity' do
       product = repository.find_product_by_code('GR1')
-      line_item = LineItem.new(product, 3)
+      line_item = described_class.new(product, 3)
 
       expect(line_item.subtotal).to eq(Money.from_amount(9.33))
     end

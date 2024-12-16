@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe DiscountStrategy::BulkPrice do
   let(:repository) { Repository::Products.new }
+  let(:product) { repository.find_product_by_code('SR1') }
+  let(:discount) { described_class.new(required_quantity: 3, new_price: 4.50) }
 
   before do
     repository.add_product(Product.new(code: 'SR1', name: 'Strawberries', price: 5.00))
   end
-
-  let(:product) { repository.find_product_by_code('SR1') }
-  let(:discount) { DiscountStrategy::BulkPrice.new(required_quantity: 3, new_price: 4.50) }
 
   it 'returns 0.00 when quantity is less than required' do
     line_item = LineItem.new(product, 2)
