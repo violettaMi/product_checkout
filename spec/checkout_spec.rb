@@ -146,19 +146,19 @@ RSpec.describe Checkout do
         checkout.scan('SR1')
         checkout.scan('SR1')
         checkout.scan('SR1')
+        checkout.scan('GR1')
 
-        expect(checkout.total).to eq(Money.from_amount(13.50))
+        expect(checkout.total).to eq(Money.from_amount(16.61))
       end
 
       it 'applies fractional price discount to CF1' do
+        checkout.scan('GR1')
         checkout.scan('CF1')
+        checkout.scan('SR1')
         checkout.scan('CF1')
         checkout.scan('CF1')
 
-        original_subtotal = Money.from_amount(33.69)
-        discounted_subtotal = original_subtotal * (2.0 / 3.0)
-
-        expect(checkout.total).to eq(discounted_subtotal)
+        expect(checkout.total).to eq(Money.from_amount(30.57))
       end
 
       it 'applies all discounts to their respective products in a mixed basket' do
